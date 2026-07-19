@@ -16,7 +16,7 @@ import {
 import SwipeCard from '../components/SwipeCard';
 import { swipeRight, swipeLeft, skipItem, resetSwipes, removeFromCart } from '../slices/swipeSlice';
 import { AppDispatch, RootState } from '../store';
-import { FoodItemSynthetic, SYNTHETIC_FOOD_ITEMS } from '../data/syntheticData';
+import { FoodItemSynthetic, SYNTHETIC_FOOD_ITEMS } from '@snackflow/shared';
 
 // Icon SVGs (no emoji as structural icons)
 const HeartIcon = () => (

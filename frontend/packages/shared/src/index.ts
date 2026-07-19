@@ -7,3 +7,5 @@ export * from './components/LoadingScreen';
 export * from './store';
 export * from './slices/authSlice';
 export * from './polling/PollingManager';
+export * from './data/syntheticData';
+export * from './simulation/SimulationEngine';

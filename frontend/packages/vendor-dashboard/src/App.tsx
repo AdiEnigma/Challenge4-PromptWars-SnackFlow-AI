@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
 import { Box, CircularProgress } from '@mui/material';
+import { simulationEngine } from '@snackflow/shared';
 
 const DashboardPage = lazy(() => import('./pages/DashboardPage'));
 
@@ -12,13 +13,19 @@ const LoadingFallback = () => (
   </Box>
 );
 
-const App: React.FC = () => (
-  <Suspense fallback={<LoadingFallback />}>
+const App: React.FC = () => {
+  React.useEffect(() => {
+    simulationEngine.start();
+  }, []);
+
+  return (
+    <Suspense fallback={<LoadingFallback />}>
     <Routes>
       <Route path="/" element={<DashboardPage />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   </Suspense>
-);
+  );
+};
 
 export default App;

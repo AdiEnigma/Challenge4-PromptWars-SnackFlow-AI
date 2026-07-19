@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { SYNTHETIC_FOOD_ITEMS, FoodItemSynthetic } from '../data/syntheticData';
+import { SYNTHETIC_FOOD_ITEMS, FoodItemSynthetic, simulationEngine } from '@snackflow/shared';
 
 interface SwipeState {
   items: FoodItemSynthetic[];
@@ -57,6 +57,22 @@ const swipeSlice = createSlice({
     addCustomItem(state, action: PayloadAction<FoodItemSynthetic>) {
       state.items.push(action.payload);
     },
+    refreshItems(state) {
+      // Reload items from simulation engine (brings new popular items in)
+      const currentItems = simulationEngine.getFoodItems();
+      
+      // We only want to update items that haven't been swiped yet
+      // To keep it simple, we sort the remaining items to put popular items first
+      const remainingItems = currentItems.filter(
+        item => !state.likedItems.find(l => l.id === item.id) && !state.dislikedItems.find(d => d.id === item.id)
+      );
+      
+      // Sort: popular first
+      remainingItems.sort((a, b) => (b.popular ? 1 : 0) - (a.popular ? 1 : 0));
+      
+      state.items = remainingItems;
+      state.currentIndex = 0; // reset index to point to the fresh sorted stack
+    },
   },
 });
 
@@ -67,6 +83,7 @@ export const {
   resetSwipes,
   removeFromCart,
   addCustomItem,
+  refreshItems,
 } = swipeSlice.actions;
 
 export default swipeSlice.reducer;

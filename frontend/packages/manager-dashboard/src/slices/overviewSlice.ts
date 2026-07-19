@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { Stall, StadiumMetrics, Alert } from '@snackflow/shared-types';
-import { apiClient } from '@snackflow/shared/api/client';
+import { apiClient } from '@snackflow/shared';
+import { simulationEngine } from '@snackflow/shared';
 
 interface OverviewState {
   stalls: Stall[];
@@ -22,11 +23,37 @@ export const fetchOverview = createAsyncThunk<{ stalls: Stall[]; metrics: Stadiu
   'overview/fetch',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await apiClient.get<{ stalls: Stall[]; metrics: StadiumMetrics }>('/api/manager/overview');
-      return response.data;
+      // Use Simulation Engine instead of backend API for Vercel demo
+      const stallsRaw = simulationEngine.getStalls();
+      
+      const stalls: Stall[] = stallsRaw.map(s => ({
+        id: s.id,
+        name: s.name,
+        vendorId: 'vendor-1',
+        section: s.section,
+        location: { latitude: 40.7128, longitude: -74.0060, section: s.section },
+        status: 'open',
+        queueLength: s.queueLength,
+        estimatedWaitTime: s.waitTime,
+        congestionLevel: s.congestionLevel,
+        foodItems: []
+      }));
+
+      const metrics: StadiumMetrics = {
+        totalSalesToday: 12500 + Math.floor(Math.random() * 500),
+        totalOrders: 450 + Math.floor(Math.random() * 20),
+        averageWaitTime: Math.round(stalls.reduce((a, b) => a + b.estimatedWaitTime, 0) / stalls.length),
+        busiestSection: 'Section D - West Wing',
+        predictionAccuracy: 92.5 + (Math.random() * 2),
+        openStalls: stalls.length,
+        totalStalls: stalls.length,
+        restockingComplianceRate: 98.2,
+        activeAlertsCount: 0
+      };
+
+      return { stalls, metrics };
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch overview');
+      return rejectWithValue('Failed to fetch simulated overview');
     }
   }
 );

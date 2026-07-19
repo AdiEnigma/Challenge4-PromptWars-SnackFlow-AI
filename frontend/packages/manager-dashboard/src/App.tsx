@@ -2,8 +2,9 @@ import React, { Suspense, lazy, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { CircularProgress, Box } from '@mui/material';
-import { ProtectedRoute, wsManager } from '@snackflow/shared';
+import { ProtectedRoute, wsManager, simulationEngine } from '@snackflow/shared';
 import { fetchProfile } from '@snackflow/shared/slices/authSlice';
+import { fetchOverview } from './slices/overviewSlice';
 import { AppDispatch } from './store';
 import LoginPage from './pages/LoginPage';
 
@@ -28,7 +29,19 @@ const App: React.FC = () => {
         wsManager.connect(token);
       }).catch(() => {});
     }
-    return () => { wsManager.disconnect(); };
+    
+    // Start synthetic simulation (Vercel serverless demo mode)
+    simulationEngine.start();
+    const onSimUpdate = () => {
+      dispatch(fetchOverview());
+    };
+    window.addEventListener('snackflow-simulation-update', onSimUpdate);
+
+    return () => { 
+      wsManager.disconnect(); 
+      window.removeEventListener('snackflow-simulation-update', onSimUpdate);
+      // We don't stop the engine so other tabs can use it, or we could.
+    };
   }, [dispatch]);
 
   return (

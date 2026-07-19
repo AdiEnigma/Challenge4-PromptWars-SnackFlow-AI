@@ -1,6 +1,9 @@
 import React, { Suspense, lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Box, CircularProgress } from '@mui/material';
+import { useDispatch } from 'react-redux';
+import { simulationEngine } from '@snackflow/shared';
+import { refreshItems } from './slices/swipeSlice';
 
 const SwipePage = lazy(() => import('./pages/SwipePage'));
 const RecommendPage = lazy(() => import('./pages/RecommendPage'));
@@ -18,6 +21,15 @@ const LoadingFallback = () => (
 );
 
 const App: React.FC = () => {
+  const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    simulationEngine.start();
+    const onSimUpdate = () => dispatch(refreshItems());
+    window.addEventListener('snackflow-simulation-update', onSimUpdate);
+    return () => window.removeEventListener('snackflow-simulation-update', onSimUpdate);
+  }, [dispatch]);
+
   return (
     <Suspense fallback={<LoadingFallback />}>
       <Routes>

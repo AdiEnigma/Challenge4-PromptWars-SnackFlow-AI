@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { Box, Typography, Chip, Stack } from '@mui/material';
-import { FoodItemSynthetic } from '../data/syntheticData';
+import { FoodItemSynthetic } from '@snackflow/shared';
 
 interface SwipeCardProps {
   foodItem: FoodItemSynthetic;

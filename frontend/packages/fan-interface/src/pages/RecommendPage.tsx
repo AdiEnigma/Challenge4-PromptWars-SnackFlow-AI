@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Box, Typography, Chip } from '@mui/material';
 import { RootState } from '../store';
-import { SYNTHETIC_STALLS, recommendNextStall } from '../data/syntheticData';
+import { SYNTHETIC_STALLS, recommendNextStall } from '@snackflow/shared';
 
 const BackIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFB97" strokeWidth="2.5" strokeLinecap="round">
