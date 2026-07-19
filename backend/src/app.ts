@@ -13,10 +13,13 @@ const app = express();
 
 app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(cors({
-  origin: config.frontendUrls,
+  origin: function (origin, callback) {
+    // Allow any origin for the demo deployment
+    callback(null, true);
+  },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
 }));
 app.use(compression());
 app.use(express.json({ limit: '10mb' }));
