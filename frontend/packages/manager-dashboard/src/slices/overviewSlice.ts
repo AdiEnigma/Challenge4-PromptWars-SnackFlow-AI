@@ -31,7 +31,7 @@ export const fetchOverview = createAsyncThunk<{ stalls: Stall[]; metrics: Stadiu
         name: s.name,
         vendorId: 'vendor-1',
         section: s.section,
-        location: { latitude: 40.7128, longitude: -74.0060, section: s.section },
+        location: { latitude: 40.7128, longitude: -74.0060, section: s.section, level: 1 },
         status: 'open',
         queueLength: s.queueLength,
         estimatedWaitTime: s.waitTime,
@@ -41,14 +41,13 @@ export const fetchOverview = createAsyncThunk<{ stalls: Stall[]; metrics: Stadiu
 
       const metrics: StadiumMetrics = {
         totalSalesToday: 12500 + Math.floor(Math.random() * 500),
-        totalOrders: 450 + Math.floor(Math.random() * 20),
         averageWaitTime: Math.round(stalls.reduce((a, b) => a + b.estimatedWaitTime, 0) / stalls.length),
-        busiestSection: 'Section D - West Wing',
         predictionAccuracy: 92.5 + (Math.random() * 2),
         openStalls: stalls.length,
         totalStalls: stalls.length,
         restockingComplianceRate: 98.2,
-        activeAlertsCount: 0
+        totalLostSales: 420 + Math.floor(Math.random() * 50),
+        activeAlerts: 0
       };
 
       return { stalls, metrics };
