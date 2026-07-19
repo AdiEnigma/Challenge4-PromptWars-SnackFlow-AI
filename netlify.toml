@@ -1,7 +1,7 @@
 [build]
-  base = "frontend/packages/fan-interface"
-  command = "npm install && npm run build"
-  publish = "frontend/packages/fan-interface/dist"
+  base = "frontend"
+  command = "npm install && npm run build:fan"
+  publish = "packages/fan-interface/dist"
 
 [build.environment]
   NODE_VERSION = "20"

@@ -1,3 +1,5 @@
+import { FoodItem } from './food';
+
 export interface Stall {
   id: string;
   name: string;

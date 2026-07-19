@@ -18,7 +18,9 @@
     "baseUrl": "..",
     "paths": {
       "@snackflow/shared-types": ["shared-types/src"],
-      "@snackflow/shared": ["shared/src"]
+      "@snackflow/shared-types/*": ["shared-types/src/*"],
+      "@snackflow/shared": ["shared/src"],
+      "@snackflow/shared/*": ["shared/src/*"]
     }
   },
   "include": ["src"]
