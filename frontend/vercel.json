@@ -1,6 +1,5 @@
-{
   "buildCommand": "npm run build:unified",
-  "outputDirectory": "frontend/dist",
+  "outputDirectory": "dist",
   "framework": "vite",
   "rewrites": [
     {
