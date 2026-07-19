@@ -11,6 +11,6 @@
     "build:frontend": "npm run build --workspace=snackflow-frontend",
     "build:aiml": "npm run build --workspace=snackflow-ai-ml",
     "build:backend": "npm run build --workspace=snackflow-ai-backend",
-    "build:unified": "npm run build:aiml && npm run build:backend && npm run build:unified --workspace=snackflow-frontend && rm -rf dist && cp -r frontend/dist dist"
+    "build:unified": "npm run build:aiml && npm run build:backend && npm run build --workspace=@snackflow/fan-interface && npm run build --workspace=@snackflow/vendor-dashboard && npm run build --workspace=@snackflow/manager-dashboard && npm run copy:unified --workspace=snackflow-frontend && rm -rf dist && cp -r frontend/dist dist"
   }
 }
