@@ -17,5 +17,9 @@
     "build:manager": "npm run build --workspace=packages/manager-dashboard",
     "build:all": "npm run build:fan && npm run build:vendor && npm run build:manager",
     "build:unified": "npm run build:all && rm -rf dist && mkdir -p dist && mv packages/fan-interface/dist dist/fan && mv packages/vendor-dashboard/dist dist/vendor && mv packages/manager-dashboard/dist dist/manager && cp index.html dist/index.html"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "*",
+    "@rollup/rollup-linux-x64-musl": "*"
   }
 }

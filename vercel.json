@@ -1,4 +1,5 @@
 {
+  "installCommand": "npm install && npm install --prefix frontend --include=optional",
   "buildCommand": "npm run build:unified",
   "outputDirectory": "dist",
   "framework": "vite",
