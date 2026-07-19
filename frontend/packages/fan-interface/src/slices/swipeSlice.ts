@@ -1,83 +1,72 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { FoodItem, SwipeEvent } from '@snackflow/shared-types';
-import { apiClient } from '@snackflow/shared/api/client';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { SYNTHETIC_FOOD_ITEMS, FoodItemSynthetic } from '../data/syntheticData';
 
 interface SwipeState {
-  items: FoodItem[];
+  items: FoodItemSynthetic[];
   currentIndex: number;
-  loading: boolean;
-  error: string | null;
-  swipeHistory: SwipeEvent[];
+  likedItems: FoodItemSynthetic[];
+  dislikedItems: FoodItemSynthetic[];
+  cart: FoodItemSynthetic[];
+  cartTotal: number;
 }
 
 const initialState: SwipeState = {
-  items: [],
+  items: SYNTHETIC_FOOD_ITEMS,
   currentIndex: 0,
-  loading: false,
-  error: null,
-  swipeHistory: [],
+  likedItems: [],
+  dislikedItems: [],
+  cart: [],
+  cartTotal: 0,
 };
-
-export const fetchFoodItems = createAsyncThunk<FoodItem[]>(
-  'swipe/fetchItems',
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await apiClient.get<FoodItem[]>('/api/food-items');
-      return response.data;
-    } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch items');
-    }
-  }
-);
-
-export const recordSwipe = createAsyncThunk<SwipeEvent, { foodItemId: string; stallId: string; direction: 'left' | 'right' }>(
-  'swipe/record',
-  async (data, { rejectWithValue }) => {
-    try {
-      const response = await apiClient.post<SwipeEvent>('/api/swipe', data);
-      return response.data;
-    } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to record swipe');
-    }
-  }
-);
 
 const swipeSlice = createSlice({
   name: 'swipe',
   initialState,
   reducers: {
-    nextItem(state) {
-      state.currentIndex = Math.min(state.currentIndex + 1, state.items.length - 1);
+    swipeRight(state, action: PayloadAction<FoodItemSynthetic>) {
+      state.likedItems.push(action.payload);
+      state.cart.push(action.payload);
+      state.cartTotal = parseFloat(
+        (state.cartTotal + action.payload.price).toFixed(2)
+      );
+      state.currentIndex = Math.min(state.currentIndex + 1, state.items.length);
+    },
+    swipeLeft(state, action: PayloadAction<FoodItemSynthetic>) {
+      state.dislikedItems.push(action.payload);
+      state.currentIndex = Math.min(state.currentIndex + 1, state.items.length);
+    },
+    skipItem(state) {
+      state.currentIndex = Math.min(state.currentIndex + 1, state.items.length);
     },
     resetSwipes(state) {
       state.currentIndex = 0;
-      state.items = [];
-      state.swipeHistory = [];
+      state.likedItems = [];
+      state.dislikedItems = [];
+      state.cart = [];
+      state.cartTotal = 0;
     },
-  },
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchFoodItems.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchFoodItems.fulfilled, (state, action: PayloadAction<FoodItem[]>) => {
-        state.loading = false;
-        state.items = action.payload;
-        state.currentIndex = 0;
-      })
-      .addCase(fetchFoodItems.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
-      })
-      .addCase(recordSwipe.fulfilled, (state, action: PayloadAction<SwipeEvent>) => {
-        state.swipeHistory.push(action.payload);
-        state.currentIndex = Math.min(state.currentIndex + 1, state.items.length);
-      });
+    removeFromCart(state, action: PayloadAction<string>) {
+      const idx = state.cart.findIndex((i) => i.id === action.payload);
+      if (idx !== -1) {
+        state.cartTotal = parseFloat(
+          (state.cartTotal - state.cart[idx].price).toFixed(2)
+        );
+        state.cart.splice(idx, 1);
+      }
+    },
+    addCustomItem(state, action: PayloadAction<FoodItemSynthetic>) {
+      state.items.push(action.payload);
+    },
   },
 });
 
-export const { nextItem, resetSwipes } = swipeSlice.actions;
+export const {
+  swipeRight,
+  swipeLeft,
+  skipItem,
+  resetSwipes,
+  removeFromCart,
+  addCustomItem,
+} = swipeSlice.actions;
+
 export default swipeSlice.reducer;

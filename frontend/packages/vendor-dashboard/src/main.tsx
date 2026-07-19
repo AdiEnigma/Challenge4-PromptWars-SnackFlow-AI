@@ -1,34 +1,41 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import App from './App';
-import { store } from './store';
-import { ErrorBoundary } from '@snackflow/shared';
 
 const theme = createTheme({
   palette: {
-    primary: { main: '#1565c0' },
-    secondary: { main: '#ff6d00' },
-    background: { default: '#fafafa' },
+    primary: { main: '#FE7F42', contrastText: '#FFFB97' },
+    secondary: { main: '#B32C1A', contrastText: '#FFFB97' },
+    background: { default: '#2A1617', paper: '#3a2020' },
+    text: { primary: '#FFFB97', secondary: '#FE7F42' },
   },
   typography: {
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    fontFamily: '"Outfit", "Inter", "Helvetica", "Arial", sans-serif',
+  },
+  shape: { borderRadius: 12 },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: { textTransform: 'none', fontWeight: 700 },
+      },
+    },
+    MuiTab: {
+      styleOverrides: {
+        root: { textTransform: 'none' },
+      },
+    },
   },
 });
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <Provider store={store}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <ErrorBoundary>
-          <BrowserRouter>
-            <App />
-          </BrowserRouter>
-        </ErrorBoundary>
-      </ThemeProvider>
-    </Provider>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </ThemeProvider>
   </React.StrictMode>
 );

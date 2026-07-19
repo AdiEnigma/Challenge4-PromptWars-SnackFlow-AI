@@ -3,90 +3,326 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SnackFlow AI</title>
+  <meta name="description" content="SnackFlow AI — Tinder-style stadium food ordering. Swipe to discover, skip the queue.">
+  <title>SnackFlow AI 🍕</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      background: #0f172a;
-      color: #f8fafc;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:   #FFFB97;
+      --orange:  #FE7F42;
+      --red:     #B32C1A;
+      --muted:   #7A4B47;
+      --dark:    #2A1617;
+      --card-bg: rgba(58, 32, 32, 0.7);
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--dark);
+      font-family: 'Outfit', system-ui, sans-serif;
+      color: var(--cream);
+      overflow-x: hidden;
+    }
+
+    /* ── Ambient glows ── */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -200px; left: 50%;
+      transform: translateX(-50%);
+      width: 700px; height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(254,127,66,0.18) 0%, transparent 65%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -200px; left: 50%;
+      transform: translateX(-50%);
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(179,44,26,0.12) 0%, transparent 65%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Layout ── */
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 100vh;
-      margin: 0;
-      padding: 20px;
+      padding: 40px 20px;
+      gap: 48px;
     }
+
+    /* ── Hero ── */
+    .hero {
+      text-align: center;
+      max-width: 520px;
+    }
+
+    .logo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(254,127,66,0.12);
+      border: 1px solid rgba(254,127,66,0.3);
+      border-radius: 99px;
+      padding: 6px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 20px;
+    }
+
+    .logo-badge .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--orange);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.5; transform: scale(1.4); }
+    }
+
     h1 {
-      font-size: 3rem;
-      margin-bottom: 10px;
-      background: linear-gradient(to right, #38bdf8, #818cf8);
+      font-size: clamp(2.8rem, 8vw, 4.5rem);
+      font-weight: 900;
+      line-height: 1.0;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+
+    h1 .word-snack { color: var(--cream); }
+    h1 .word-flow  {
+      background: linear-gradient(135deg, var(--orange) 0%, var(--red) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
-    p {
-      color: #94a3b8;
-      font-size: 1.2rem;
-      margin-bottom: 40px;
+
+    .tagline {
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: rgba(255,251,151,0.55);
+      line-height: 1.6;
+      max-width: 380px;
+      margin: 0 auto;
     }
+
+    /* ── Cards grid ── */
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 18px;
       width: 100%;
-      max-width: 900px;
+      max-width: 820px;
     }
+
     .card {
-      background: #1e293b;
-      border: 1px solid #334155;
-      border-radius: 12px;
-      padding: 30px;
+      background: var(--card-bg);
+      border: 1.5px solid rgba(255,255,255,0.07);
+      border-radius: 22px;
+      padding: 28px 24px;
       text-align: center;
       text-decoration: none;
-      color: white;
-      transition: all 0.3s ease;
+      color: var(--cream);
       display: flex;
       flex-direction: column;
       align-items: center;
+      gap: 12px;
+      backdrop-filter: blur(12px);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
     }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--card-glow);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      border-radius: inherit;
+    }
+
+    .card:hover::before { opacity: 1; }
+
     .card:hover {
-      transform: translateY(-5px);
-      border-color: #38bdf8;
-      box-shadow: 0 10px 25px rgba(56, 189, 248, 0.2);
+      transform: translateY(-6px) scale(1.01);
+      border-color: var(--card-accent);
+      box-shadow: 0 20px 48px var(--card-shadow);
     }
+
+    .card:active { transform: translateY(-3px) scale(0.99); }
+
+    /* Per-card accent colours */
+    .fan {
+      --card-accent:  var(--orange);
+      --card-shadow:  rgba(254,127,66,0.25);
+      --card-glow:    linear-gradient(135deg, rgba(254,127,66,0.08) 0%, transparent 70%);
+      border-top: 3px solid var(--orange);
+    }
+    .vendor {
+      --card-accent:  var(--cream);
+      --card-shadow:  rgba(255,251,151,0.18);
+      --card-glow:    linear-gradient(135deg, rgba(255,251,151,0.07) 0%, transparent 70%);
+      border-top: 3px solid var(--cream);
+    }
+    .manager {
+      --card-accent:  var(--red);
+      --card-shadow:  rgba(179,44,26,0.25);
+      --card-glow:    linear-gradient(135deg, rgba(179,44,26,0.1) 0%, transparent 70%);
+      border-top: 3px solid var(--red);
+    }
+
+    .card-icon {
+      font-size: 2.4rem;
+      line-height: 1;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));
+    }
+
     .card h2 {
-      margin: 0 0 10px 0;
-      font-size: 1.5rem;
-    }
-    .card p {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--cream);
       margin: 0;
-      font-size: 1rem;
-      color: #cbd5e1;
     }
-    .fan { border-top: 4px solid #f43f5e; }
-    .vendor { border-top: 4px solid #eab308; }
-    .manager { border-top: 4px solid #3b82f6; }
+
+    .card p {
+      font-size: 0.88rem;
+      font-weight: 400;
+      color: rgba(255,251,151,0.5);
+      margin: 0;
+      line-height: 1.55;
+    }
+
+    .card-cta {
+      margin-top: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--card-accent);
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    .card:hover .card-cta {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Footer ── */
+    .footer {
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(255,251,151,0.22);
+      letter-spacing: 0.5px;
+    }
+
+    /* ── Floating food emojis (ambient) ── */
+    .floaters {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .floater {
+      position: absolute;
+      font-size: 1.6rem;
+      opacity: 0.06;
+      animation: float linear infinite;
+      user-select: none;
+    }
+    @keyframes float {
+      from { transform: translateY(110vh) rotate(0deg); opacity: 0.06; }
+      to   { transform: translateY(-10vh)  rotate(360deg); opacity: 0; }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 480px) {
+      .grid { grid-template-columns: 1fr; max-width: 340px; }
+      h1 { font-size: 2.6rem; }
+    }
   </style>
 </head>
 <body>
-  <h1>SnackFlow AI</h1>
-  <p>Select your interface to get started</p>
-  
-  <div class="grid">
-    <a href="/fan/" class="card fan">
-      <h2>📱 Fan Interface</h2>
-      <p>Order food, swipe snacks, and skip the lines.</p>
-    </a>
-    
-    <a href="/vendor/" class="card vendor">
-      <h2>🏪 Vendor Dashboard</h2>
-      <p>Manage orders, see predictions, and restock.</p>
-    </a>
-    
-    <a href="/manager/" class="card manager">
-      <h2>📊 Manager Dashboard</h2>
-      <p>Stadium-wide analytics and AI insights.</p>
-    </a>
+
+  <!-- Ambient floating food -->
+  <div class="floaters" aria-hidden="true">
+    <span class="floater" style="left:8%;  animation-duration:18s; animation-delay:0s;   font-size:2rem;">🍕</span>
+    <span class="floater" style="left:22%; animation-duration:22s; animation-delay:4s;   font-size:1.4rem;">🍔</span>
+    <span class="floater" style="left:40%; animation-duration:16s; animation-delay:8s;   font-size:1.8rem;">🌮</span>
+    <span class="floater" style="left:60%; animation-duration:20s; animation-delay:2s;   font-size:1.3rem;">🌭</span>
+    <span class="floater" style="left:75%; animation-duration:24s; animation-delay:6s;   font-size:2rem;">🍟</span>
+    <span class="floater" style="left:88%; animation-duration:17s; animation-delay:10s;  font-size:1.5rem;">🧆</span>
+    <span class="floater" style="left:50%; animation-duration:19s; animation-delay:14s;  font-size:1.6rem;">🍜</span>
   </div>
+
+  <div class="wrapper">
+
+    <!-- Hero -->
+    <div class="hero">
+      <div class="logo-badge">
+        <span class="dot"></span>
+        Stadium Food · AI Powered
+      </div>
+      <h1>
+        <span class="word-snack">Snack</span><span class="word-flow">Flow</span>
+      </h1>
+      <p class="tagline">
+        Swipe right to crave. Swipe left to skip.<br>
+        AI finds your stall — zero queue stress.
+      </p>
+    </div>
+
+    <!-- Cards -->
+    <div class="grid">
+      <a href="/fan/" class="card fan" id="fan-card">
+        <div class="card-icon">🍕</div>
+        <h2>Fan Interface</h2>
+        <p>Swipe snacks Tinder-style. Build your cart. Get directed to the fastest stall.</p>
+        <span class="card-cta">Start Swiping →</span>
+      </a>
+
+      <a href="/vendor/" class="card vendor" id="vendor-card">
+        <div class="card-icon">🧑‍🍳</div>
+        <h2>Vendor Dashboard</h2>
+        <p>Add menu items, track your stall queue, and manage your food lineup in real time.</p>
+        <span class="card-cta">Manage Stall →</span>
+      </a>
+
+      <a href="/manager/" class="card manager" id="manager-card">
+        <div class="card-icon">📊</div>
+        <h2>Manager Dashboard</h2>
+        <p>Stadium-wide analytics, demand heatmaps, and AI preparation insights.</p>
+        <span class="card-cta">View Analytics →</span>
+      </a>
+    </div>
+
+    <p class="footer">SnackFlow AI · Stadium Edition · 2026</p>
+  </div>
+
 </body>
 </html>
