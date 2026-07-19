@@ -21,7 +21,7 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import { RootState, AppDispatch } from '../store';
 import { fetchPostMatchReport, downloadReportPdf, clearReport } from '../slices/analyticsSlice';
-import { PostMatchReport } from '@snackflow/shared-types';
+import type { PostMatchReport as PostMatchReportType } from '@snackflow/shared-types';
 
 const PostMatchReport: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -92,7 +92,7 @@ const PostMatchReport: React.FC = () => {
 };
 
 interface ReportViewProps {
-  report: PostMatchReport;
+  report: PostMatchReportType;
 }
 
 const PostMatchReportView: React.FC<ReportViewProps> = ({ report }) => {
