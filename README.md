@@ -1,50 +1,102 @@
-# SnackFlow AI 🍕🏟️
+<div align="center">
+  <h1>🍕 SnackFlow AI 🏟️</h1>
+  <p><strong>Tinder for Stadium Food — Swipe. Skip the Queue. Enjoy the Game.</strong></p>
 
-SnackFlow AI is a modern, AI-powered stadium food ordering system. It brings a "Tinder-style" swiping experience to stadium concessions, reducing queue times, maximizing vendor efficiency, and providing stadium managers with real-time demand analytics.
+  [![React](https://img.shields.io/badge/React-18.x-blue?style=for-the-badge&logo=react)](https://reactjs.org/)
+  [![Vite](https://img.shields.io/badge/Vite-5.x-646CFF?style=for-the-badge&logo=vite)](https://vitejs.dev/)
+  [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+  [![Redux](https://img.shields.io/badge/Redux-Toolkit-764ABC?style=for-the-badge&logo=redux)](https://redux-toolkit.js.org/)
+</div>
 
-## 🚀 How to Navigate & Access the App
+<br />
 
-SnackFlow AI consists of three interconnected applications. When you visit the main public URL (e.g., your Vercel deployment link), you will land on the **Hub Page**, which provides direct links to all three portals. 
-
-You can also access them directly via their specific URL paths:
-
-### 1. 🍕 Fan Interface
-* **URL Path:** `/fan/` (e.g., `https://your-app.vercel.app/fan/`)
-* **Who it's for:** Stadium attendees looking to order food.
-* **How to navigate:** Just open the link on a mobile device or desktop. You'll immediately be dropped into the "Swipe" feed where you can swipe right to like a food item, or left to skip it. 
-
-### 2. 🧑‍🍳 Vendor Dashboard
-* **URL Path:** `/vendor/` (e.g., `https://your-app.vercel.app/vendor/`)
-* **Who it's for:** Food stall operators and kitchen staff inside the stadium.
-* **How to navigate:** Open the link to access the vendor portal. From here, you can see live orders, manage your menu, and add new food items that will instantly appear in the Fan Interface's swipe feed.
-
-### 3. 📊 Manager Dashboard
-* **URL Path:** `/manager/` (e.g., `https://your-app.vercel.app/manager/`)
-* **Who it's for:** Stadium operations and facility managers.
-* **How to navigate:** Open the link to view the high-level operations dashboard. You will see stadium-wide analytics, heatmaps of where demand is highest, and AI predictions.
+**SnackFlow AI** is a next-generation stadium food ordering system designed to eliminate congestion. Fans swipe to discover food, while AI routes them to the fastest stall. Vendors manage their live queues, and Managers gain a bird's-eye view of stadium demand.
 
 ---
 
-## ✨ Key Features
+## ✨ The Hub & Dashboards
 
-### Fan Experience (Tinder for Food)
-- **Swipe-to-Discover:** A fun, engaging UI where fans swipe right to crave and left to skip.
-- **Smart Cart Building:** Liked items are automatically added to a cart.
-- **AI-Powered Routing:** Once a fan decides what they want, the AI analyzes stall queue lengths, prep times, and walking distance to direct the fan to the fastest possible stall, avoiding congestion.
+SnackFlow AI is a unified platform comprising three main portals. When accessing the public URL, you'll be greeted by the **Hub Page**, providing instant access to all three experiences.
 
-### Vendor Tools
-- **Live Menu Management:** Vendors can add new menu items (with dietary tags, pricing, and images) and mark items as "Popular" or "Sold Out."
-- **Instant Feed Updates:** Any changes made by the vendor instantly reflect in the Fan app's swipe feed.
-- **Queue Tracking:** Vendors can monitor their current queue length and order volume in real-time.
-
-### Stadium Manager Analytics
-- **Live Demand Heatmaps:** Visualize which sections of the stadium are experiencing the highest food demand to deploy staff dynamically.
-- **Predictive AI Insights:** The system uses TensorFlow.js to predict upcoming surges in food demand based on game events (e.g., halftime approaching).
-- **Revenue & Congestion Monitoring:** Track total sales, average wait times, and bottleneck stalls across the entire venue.
+| Portal | Audience | Path | Description |
+|---|---|---|---|
+| 🍕 **Fan Interface** | Stadium Attendees | `/fan/` | A mobile-first app where fans swipe right on food they crave, add to cart, and get AI-routed to the optimal stall to minimize walking and queue time. |
+| 🧑‍🍳 **Vendor Dashboard** | Food Stall Operators | `/vendor/` | A live dashboard for stall owners to adjust menus, add new items, and monitor their real-time incoming queues. |
+| 📊 **Manager Dashboard** | Stadium Operations | `/manager/` | The command center. Displays live stadium heatmaps, predictive AI demand alerts, and comprehensive sales analytics. |
 
 ---
 
-## 🛠️ Tech Stack
-- **Frontend:** React, Vite, Material UI (MUI), TypeScript, Emotion
-- **Backend/AI:** Node.js, Express, Socket.io, TensorFlow.js (for demand prediction)
-- **Monorepo:** Managed via npm workspaces (`frontend`, `backend`, `ai-ml`)
+## ⚡ Core Features
+
+### 🌪️ The "Swipe" Experience (Fan)
+- **Tinder-style Discovery:** A fun, engaging UI. Swipe right to crave, left to pass.
+- **Smart Cart Building:** Selected items intelligently build an optimized cart.
+- **AI Routing Engine:** Dynamically calculates walking distance + stall prep times + queue length to point fans to the absolute fastest pickup spot.
+
+### 📈 Live Operations (Vendor & Manager)
+- **Instant Menu Updates:** Vendors can flag items as "Popular" or "Sold Out," instantly refreshing the Fan's swipe feed across the stadium.
+- **Demand Heatmaps:** Managers can view live, color-coded stadium maps showing congestion hotspots in real-time.
+
+### 🤖 **NEW:** Synthetic Forecast Simulator
+Since this project is hosted in a serverless environment, we've built a **Browser-based Simulation Engine**. 
+- **What it does:** Every 30 seconds, it automatically mutates stall queue lengths, wait times, and rotates "popular" food items.
+- **How to see it:** Open the *Manager Dashboard* and *Fan Interface* in separate tabs. Watch the heatmap bubbles change color automatically, and watch the Fan swipe feed instantly promote new trending snacks via browser `localStorage` syncing!
+
+---
+
+## 🏗️ Architecture & Tech Stack
+
+This project is organized as an `npm` workspace monorepo, keeping the frontend apps decoupled yet sharing the same design tokens and types.
+
+```mermaid
+graph TD
+    A[Hub / Landing Page] --> B(Fan Interface)
+    A --> C(Vendor Dashboard)
+    A --> D(Manager Dashboard)
+    
+    B <--> E[(Simulation Engine)]
+    C <--> E
+    D <--> E
+    
+    E -->|Synchronizes via| F[Browser LocalStorage]
+    
+    subgraph Frontend Stack
+    React[React 18]
+    Vite[Vite Bundler]
+    MUI[Material UI]
+    Redux[Redux Toolkit]
+    end
+```
+
+### 💻 Technologies
+- **UI Framework:** React with Vite
+- **Styling:** Material UI (MUI), Emotion, custom CSS
+- **State Management:** Redux Toolkit, Context API
+- **Data/Sync:** Custom Event dispatchers and `localStorage` (for serverless mock environments)
+- **Language:** Fully typed with TypeScript
+
+---
+
+## 🛠️ Local Development
+
+To run the unified SnackFlow AI platform locally:
+
+1. **Install dependencies:**
+   ```bash
+   npm install --include=dev && npm install --prefix frontend --include=optional
+   ```
+
+2. **Run the unified dev environment (All apps):**
+   ```bash
+   npm run dev:frontend
+   ```
+
+3. **Or, build the production unified application:**
+   ```bash
+   npm run build:unified
+   ```
+
+<div align="center">
+  <br/>
+  <i>Built for the future of stadium experiences. 🚀</i>
+</div>
