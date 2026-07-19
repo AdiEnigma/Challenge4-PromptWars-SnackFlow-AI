@@ -14,12 +14,18 @@ export const login = createAsyncThunk<AuthResponse, LoginCredentials>(
   'auth/login',
   async (credentials, { rejectWithValue }) => {
     try {
-      const response = await apiClient.post<AuthResponse>('/api/auth/login', credentials);
-      localStorage.setItem('snackflow_token', response.data.token);
-      return response.data;
+      // Mock login for Vercel demo
+      const mockToken = 'mock-demo-token';
+      const mockUser: User = {
+        id: 'user-1',
+        email: credentials.email,
+        name: 'Demo Manager',
+        role: 'manager'
+      };
+      localStorage.setItem('snackflow_token', mockToken);
+      return { user: mockUser, token: mockToken };
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Login failed');
+      return rejectWithValue('Login failed');
     }
   }
 );
@@ -42,11 +48,16 @@ export const fetchProfile = createAsyncThunk<User>(
   'auth/profile',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await apiClient.get<User>('/api/auth/profile');
-      return response.data;
+      // Mock profile for Vercel demo
+      const mockUser: User = {
+        id: 'user-1',
+        email: 'manager@snackflow.ai',
+        name: 'Demo Manager',
+        role: 'manager'
+      };
+      return mockUser;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch profile');
+      return rejectWithValue('Failed to fetch profile');
     }
   }
 );
