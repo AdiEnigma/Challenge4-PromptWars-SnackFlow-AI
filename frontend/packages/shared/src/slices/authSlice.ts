@@ -20,10 +20,12 @@ export const login = createAsyncThunk<AuthResponse, LoginCredentials>(
         id: 'user-1',
         email: credentials.email,
         name: 'Demo Manager',
-        role: 'manager'
+        role: 'manager',
+        preferredLanguage: 'en',
+        createdAt: new Date().toISOString()
       };
       localStorage.setItem('snackflow_token', mockToken);
-      return { user: mockUser, token: mockToken };
+      return { user: mockUser, token: mockToken, expiresIn: 3600 };
     } catch (error: unknown) {
       return rejectWithValue('Login failed');
     }
@@ -53,7 +55,9 @@ export const fetchProfile = createAsyncThunk<User>(
         id: 'user-1',
         email: 'manager@snackflow.ai',
         name: 'Demo Manager',
-        role: 'manager'
+        role: 'manager',
+        preferredLanguage: 'en',
+        createdAt: new Date().toISOString()
       };
       return mockUser;
     } catch (error: unknown) {
