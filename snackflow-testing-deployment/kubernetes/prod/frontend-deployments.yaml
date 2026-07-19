@@ -1,0 +1,204 @@
+---
+# Fan Interface Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: snackflow-fan-app
+  namespace: snackflow-prod
+  labels:
+    app: snackflow-fan-app
+    component: frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: snackflow-fan-app
+  template:
+    metadata:
+      labels:
+        app: snackflow-fan-app
+        component: frontend
+    spec:
+      containers:
+      - name: fan-app
+        image: snackflow/fan-app:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: nginx-config
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
+      volumes:
+      - name: nginx-config
+        configMap:
+          name: snackflow-nginx-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fan-app-service
+  namespace: snackflow-prod
+  labels:
+    app: snackflow-fan-app
+spec:
+  selector:
+    app: snackflow-fan-app
+  ports:
+  - port: 80
+    targetPort: 80
+  type: ClusterIP
+---
+# Vendor Dashboard Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: snackflow-vendor-app
+  namespace: snackflow-prod
+  labels:
+    app: snackflow-vendor-app
+    component: frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: snackflow-vendor-app
+  template:
+    metadata:
+      labels:
+        app: snackflow-vendor-app
+        component: frontend
+    spec:
+      containers:
+      - name: vendor-app
+        image: snackflow/vendor-app:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: nginx-config
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
+      volumes:
+      - name: nginx-config
+        configMap:
+          name: snackflow-nginx-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vendor-app-service
+  namespace: snackflow-prod
+  labels:
+    app: snackflow-vendor-app
+spec:
+  selector:
+    app: snackflow-vendor-app
+  ports:
+  - port: 80
+    targetPort: 80
+  type: ClusterIP
+---
+# Manager Dashboard Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: snackflow-manager-app
+  namespace: snackflow-prod
+  labels:
+    app: snackflow-manager-app
+    component: frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: snackflow-manager-app
+  template:
+    metadata:
+      labels:
+        app: snackflow-manager-app
+        component: frontend
+    spec:
+      containers:
+      - name: manager-app
+        image: snackflow/manager-app:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: nginx-config
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
+      volumes:
+      - name: nginx-config
+        configMap:
+          name: snackflow-nginx-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: manager-app-service
+  namespace: snackflow-prod
+  labels:
+    app: snackflow-manager-app
+spec:
+  selector:
+    app: snackflow-manager-app
+  ports:
+  - port: 80
+    targetPort: 80
+  type: ClusterIP

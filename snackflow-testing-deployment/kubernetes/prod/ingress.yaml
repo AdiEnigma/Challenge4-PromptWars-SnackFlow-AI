@@ -1,0 +1,117 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: snackflow-ingress
+  namespace: snackflow-prod
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+    nginx.ingress.kubernetes.io/rate-limit-window: "1m"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    # WebSocket support
+    nginx.ingress.kubernetes.io/proxy-set-headers: |
+      map $http_upgrade $connection_upgrade {
+        default upgrade;
+        '' close;
+      }
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - snackflow.ai
+    - fan.snackflow.ai
+    - vendor.snackflow.ai
+    - manager.snackflow.ai
+    secretName: snackflow-tls
+  rules:
+  # Main API and WebSocket
+  - host: snackflow.ai
+    http:
+      paths:
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: snackflow-api-service
+            port:
+              number: 80
+      - path: /socket.io
+        pathType: Prefix
+        backend:
+          service:
+            name: snackflow-api-service
+            port:
+              number: 3001
+      - path: /health
+        pathType: Prefix
+        backend:
+          service:
+            name: snackflow-api-service
+            port:
+              number: 80
+      - path: /ready
+        pathType: Prefix
+        backend:
+          service:
+            name: snackflow-api-service
+            port:
+              number: 80
+  
+  # Fan Interface
+  - host: fan.snackflow.ai
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: fan-app-service
+            port:
+              number: 80
+  
+  # Vendor Dashboard
+  - host: vendor.snackflow.ai
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: vendor-app-service
+            port:
+              number: 80
+  
+  # Manager Dashboard
+  - host: manager.snackflow.ai
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: manager-app-service
+            port:
+              number: 80
+---
+# Certificate for SSL/TLS
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: snackflow-tls
+  namespace: snackflow-prod
+spec:
+  secretName: snackflow-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+  - snackflow.ai
+  - fan.snackflow.ai
+  - vendor.snackflow.ai
+  - manager.snackflow.ai

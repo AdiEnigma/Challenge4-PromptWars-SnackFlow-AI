@@ -1,0 +1,20 @@
+{
+  "name": "snackflow-frontend",
+  "private": true,
+  "workspaces": [
+    "packages/shared-types",
+    "packages/shared",
+    "packages/fan-interface",
+    "packages/vendor-dashboard",
+    "packages/manager-dashboard"
+  ],
+  "scripts": {
+    "dev:fan": "npm run dev --workspace=packages/fan-interface",
+    "dev:vendor": "npm run dev --workspace=packages/vendor-dashboard",
+    "dev:manager": "npm run dev --workspace=packages/manager-dashboard",
+    "build:fan": "npm run build --workspace=packages/fan-interface",
+    "build:vendor": "npm run build --workspace=packages/vendor-dashboard",
+    "build:manager": "npm run build --workspace=packages/manager-dashboard",
+    "build:all": "npm run build:fan && npm run build:vendor && npm run build:manager"
+  }
+}
