@@ -1,0 +1,14 @@
+{
+  "name": "snackflow-ai-root",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "frontend/packages/*",
+    "backend",
+    "ai-ml"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace=snackflow-frontend",
+    "build:unified": "npm run build:unified --workspace=snackflow-frontend && rm -rf dist && cp -r frontend/dist dist"
+  }
+}
